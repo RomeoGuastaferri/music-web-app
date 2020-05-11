@@ -5,29 +5,36 @@
 
 trigger:
 - master
+- develop
 
 variables:
 
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'bf75e94e-9c81-482f-b708-863910cfab89'
   
+  # Agent VM image name
+  vmImageName: 'ubuntu-16.04'
+
   # Web app name
-  webAppName: 'rg-music'
+  webAppName: 'music-albums'
 
   # Environment name
-  environmentName: 'rg-music'
+  environmentName: 'dev'
   
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  # Docker image
+  containerRegistry: 'rguastaferri-service-connection'
+  imageRepository: 'music-albums'
+  tag: '0.0.1-SNAPSHOT'
+  
+pool:
+   vmImage: $(vmImageName)
 
 stages:
 - stage: Build
   displayName: Build stage
   jobs:
-  - job: MavenPackageAndPublishArtifacts
-    displayName: Maven Package and Publish Artifacts
-    pool:
-      vmImage: $(vmImageName)
+  - job: MavenPackageArtifacts
+    displayName: Maven Package Artifacts
     
     steps:
     - task: Maven@3
@@ -35,35 +42,23 @@ stages:
       inputs:
         mavenPomFile: 'pom.xml'
 
-    - task: CopyFiles@2
-      displayName: 'Copy Files to artifact staging directory'
+    - task: Docker@2
+      displayName: Build and push an image to container registry
       inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)'
-        Contents: '**/target/*.?(war|jar)'
-        TargetFolder: $(Build.ArtifactStagingDirectory)
+        command: buildAndPush
+        repository: $(imageRepository)
+        containerRegistry: $(containerRegistry)
+        tags: |
+          $(tag)
 
-    - upload: $(Build.ArtifactStagingDirectory)
-      artifact: drop
-
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - deployment: DeployLinuxWebApp
-    displayName: Deploy Linux Web App
-    environment: $(environmentName)
-    pool: 
-      vmImage: $(vmImageName)
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            displayName: 'Azure Web App Deploy: rg-music'
-            inputs:
-              azureSubscription: $(azureSubscription)
-              appType: webAppLinux
-              appName: $(webAppName)
-              package: '$(Pipeline.Workspace)/drop/**/target/*.?(war|jar)'
-              appSettings: -Port 8080
+#- stage: Deploy
+#  displayName: Deploy stage
+#  dependsOn: Build
+#  condition: succeeded()
+#  jobs:
+#  - job: DeployDockerImage
+#    displayName: Deploy docker image to app service
+#    pool:
+#      vmImage: $(vmImageName)
+#    
+#    steps:
