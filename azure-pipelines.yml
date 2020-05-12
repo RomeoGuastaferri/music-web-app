@@ -16,15 +16,16 @@ variables:
   vmImageName: 'ubuntu-16.04'
 
   # Web app name
-  webAppName: 'music-albums'
+#  webAppName: 'music-albums'
 
   # Environment name
-  environmentName: 'dev'
-  
+#  environmentName: 'dev'
+
   # Docker image
   containerRegistry: 'rguastaferri-service-connection'
   imageRepository: 'music-albums'
   tag: '0.0.1-SNAPSHOT'
+# try $(Build.BuildId)
   
 pool:
    vmImage: $(vmImageName)
@@ -51,14 +52,20 @@ stages:
         tags: |
           $(tag)
 
-#- stage: Deploy
-#  displayName: Deploy stage
-#  dependsOn: Build
-#  condition: succeeded()
-#  jobs:
-#  - job: DeployDockerImage
-#    displayName: Deploy docker image to app service
-#    pool:
-#      vmImage: $(vmImageName)
-#    
-#    steps:
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: DeployDockerImage
+    displayName: Deploy docker image to app service
+    variables:
+    # Release variable group defines $(WebAppName) & $(RegistryName)
+    - group: Release
+    
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+        appName: $(WebAppName)
+        azureSubscription: $(azureSubscription)
+        imageName: $(RegistryName)/$(imageRepository):$(tag)
