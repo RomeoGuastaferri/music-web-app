@@ -10,22 +10,16 @@ trigger:
 variables:
 
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'bf75e94e-9c81-482f-b708-863910cfab89'
+  azureSubscription: bf75e94e-9c81-482f-b708-863910cfab89
   
   # Agent VM image name
-  vmImageName: 'ubuntu-16.04'
-
-  # Web app name
-#  webAppName: 'music-albums'
-
-  # Environment name
-#  environmentName: 'dev'
+  vmImageName: ubuntu-16.04
 
   # Docker image
-  containerRegistry: 'rguastaferri-service-connection'
-  imageRepository: 'music-albums'
-  tag: '0.0.1-SNAPSHOT'
-# try $(Build.BuildId)
+  containerRegistry: rguastaferri-service-connection
+  imageRepository: music-albums
+  tag: $(Build.BuildId)
+#  tag: '0.0.1-SNAPSHOT'
   
 pool:
    vmImage: $(vmImageName)
@@ -44,7 +38,7 @@ stages:
         mavenPomFile: 'pom.xml'
 
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Build and push image to container registry
       inputs:
         command: buildAndPush
         repository: $(imageRepository)
