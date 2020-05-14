@@ -18,8 +18,7 @@ variables:
   # Docker image
   containerRegistry: rguastaferri-service-connection
   imageRepository: music-albums
-  tag: $(Build.BuildId)
-#  tag: '0.0.1-SNAPSHOT'
+  tag: 0.0.1-SNAPSHOT
   
 pool:
    vmImage: $(vmImageName)
