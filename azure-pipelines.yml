@@ -36,6 +36,9 @@ stages:
       displayName: 'Maven Package'
       inputs:
         mavenPomFile: 'pom.xml'
+        codeCoverageTool: jaCoCo
+        codeCoverageSourceDirectories: src/main/java,src/test/java
+        codeCoverageClassFilesDirectories: target/classes,target/test-classes
 
     - task: Docker@2
       displayName: Build and push image to container registry
