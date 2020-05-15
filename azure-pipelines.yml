@@ -31,6 +31,11 @@ stages:
     displayName: Maven Package Artifacts
     
     steps:
+    - task: SonarQubePrepare@4
+      inputs:
+        SonarQube: 'SonarQube-Service'
+        scannerMode: 'Other'    
+    
     - task: Maven@3
       displayName: 'Maven Package'
       inputs:
