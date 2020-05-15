@@ -32,14 +32,18 @@ stages:
     
     steps:
     - task: SonarQubePrepare@4
+      displayName: Prepare SonarQube
       inputs:
-        SonarQube: 'SonarQube-Service'
-        scannerMode: 'Other'    
-    
+        SonarQube: SonarQube-Service
+        scannerMode: Other    
+        extraProperties: |
+          sonar.projectName=music-web-app
+          sonar.projectKey=music-web-app
+              
     - task: Maven@3
-      displayName: 'Maven Package'
+      displayName: Maven Package
       inputs:
-        mavenPomFile: 'pom.xml'
+        mavenPomFile: pom.xml
         codeCoverageTool: jaCoCo
         codeCoverageSourceDirectories: src/main/java,src/test/java
         codeCoverageClassFilesDirectories: target/classes,target/test-classes
