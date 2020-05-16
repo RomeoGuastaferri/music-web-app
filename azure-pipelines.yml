@@ -39,6 +39,7 @@ stages:
         extraProperties: |
           sonar.projectName=music-web-app
           sonar.projectKey=music-web-app
+
 #          sonar.branch.name=develop
 #          sonar.host.url=http://mysonardns.centralus.azurecontainer.io:9000
 #          sonar.login=0b9970efa6b3a91d1c1ee3b98e9f42dface2c957
