@@ -10,7 +10,8 @@ trigger:
 variables:
 
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: bf75e94e-9c81-482f-b708-863910cfab89
+#  azureSubscription: bf75e94e-9c81-482f-b708-863910cfab89
+  azureSubscription: 5afa8394-db56-47d9-a68f-8ef4b3b87898
   
   # Agent VM image name
   vmImageName: ubuntu-16.04
