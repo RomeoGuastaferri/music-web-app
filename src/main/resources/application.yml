@@ -2,9 +2,29 @@
 ---
 spring:
   jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+#  datasource:
+#    url: jdbc:mysql://music-albums.mysql.database.azure.com:3306/music_albums_db?useSSL=true&requireSSL=false
+#    username: romeo@music-albums
+#    password: msLadodo1024
 
 # turn off the security on the actuator end points as this is a demo app
 management:
   security:
     enabled: false
+
+azure:
+  keyvault:
+    enabled: true
+    uri: 'https://music-albums-keys.vault.azure.net/'
+    client-id: 3f60ba8c-1eb1-4de6-86a6-b1cd9ab2d128
+    tenant-id: c29bd088-9997-4d90-ac0f-5a20d974452a
+#   client-key: put-your-azure-client-key-here
+#   token-acquire-timeout-seconds: 60
+#   refresh-interval: 1800000
+#   secret:
+#     keys: key1,key2,key3
