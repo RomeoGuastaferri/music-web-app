@@ -1,0 +1,6 @@
+#
+# Using in-memory database
+#
+spring:
+  jpa:
+    generate-ddl: true
