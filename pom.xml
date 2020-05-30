@@ -209,7 +209,7 @@
 		</profile>
 		
 		<profile>
-			<!-- This profile will configure the application to use our Azure PostgreSQL server. -->  
+			<!-- This profile will configure the application to use our Azure MySQL server. -->  
 			<id>prod</id>  
             <activation>
                 <activeByDefault>true</activeByDefault>
