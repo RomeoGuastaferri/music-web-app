@@ -14,7 +14,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
 	<properties>
@@ -107,6 +107,12 @@
 		    <artifactId>spring-cloud-spring-service-connector</artifactId>
 		</dependency>
 
+		<dependency>
+		    <groupId>com.microsoft.azure</groupId>
+		    <artifactId>azure-keyvault-secrets-spring-boot-starter</artifactId>
+		    <version>2.0.14</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -123,10 +129,22 @@
   
 		<plugins>
 		
-            <!-- Package as an executable jar -->
+			<!-- Package as an executable jar -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Unit testing -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<!-- Disable azure key vault for tests -->
+						<azure.keyvault.enabled>false</azure.keyvault.enabled>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 			
 			<!-- JaCoCo code coverage -->
@@ -151,7 +169,7 @@
 			    </executions>
 			</plugin>
 			
-            <!-- containerize using docker -->
+			<!-- containerize using docker -->
 			<plugin>
 			    <groupId>org.codehaus.mojo</groupId>
 			    <artifactId>exec-maven-plugin</artifactId>
@@ -170,8 +188,8 @@
 			                    <argument>build</argument>
 			                    <argument>-t</argument>
 			                    <argument>${project.artifactId}:${project.version}</argument>
-                                <argument>--rm</argument>
-                                <argument>.</argument>
+						<argument>--rm</argument>
+						<argument>.</argument>
 			                </arguments>
 			            </configuration>
 			        </execution>
@@ -180,5 +198,26 @@
 
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<!-- This profile will configure Spring to use an in-memory database for local development and testing. -->  
+			<id>dev</id>  
+			<properties>
+    			<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+		</profile>
+		
+		<profile>
+			<!-- This profile will configure the application to use our Azure MySQL server. -->  
+			<id>prod</id>  
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>  
+			<properties>  
+    			<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
