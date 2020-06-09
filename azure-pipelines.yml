@@ -31,32 +31,32 @@ stages:
     displayName: Maven Package Artifacts
     
     steps:
-    - task: SonarQubePrepare@4
-      displayName: Prepare SonarQube
-      inputs:
-        SonarQube: MySonarQube-Service
-        scannerMode: Other    
-        extraProperties: |
-          sonar.projectName=music-web-app
-          sonar.projectKey=music-web-app
-
-    - task: Maven@3
-      displayName: Package app in jar file
-      inputs:
-        mavenPomFile: pom.xml
-        codeCoverageTool: JaCoCo
-        codeCoverageSourceDirectories: src/main/java,src/test/java
-        codeCoverageClassFilesDirectories: target/classes,target/test-classes
-        sqAnalysisEnabled: true
-        sqMavenPluginVersionChoice: pom
-        checkstyleAnalysisEnabled: true
-        pmdAnalysisEnabled: true
-        findbugsAnalysisEnabled: true
-
-    - task: SonarQubePublish@4
-      displayName: Publish quality gate results
-      inputs:
-        pollingTimeoutSec: 300
+#    - task: SonarQubePrepare@4
+#      displayName: Prepare SonarQube
+#      inputs:
+#        SonarQube: MySonarQube-Service
+#        scannerMode: Other    
+#        extraProperties: |
+#          sonar.projectName=music-web-app
+#          sonar.projectKey=music-web-app
+#
+#    - task: Maven@3
+#      displayName: Package app in jar file
+#      inputs:
+#        mavenPomFile: pom.xml
+#        codeCoverageTool: JaCoCo
+#        codeCoverageSourceDirectories: src/main/java,src/test/java
+#        codeCoverageClassFilesDirectories: target/classes,target/test-classes
+#        sqAnalysisEnabled: true
+#        sqMavenPluginVersionChoice: pom
+#        checkstyleAnalysisEnabled: true
+#        pmdAnalysisEnabled: true
+#        findbugsAnalysisEnabled: true
+#
+#    - task: SonarQubePublish@4
+#      displayName: Publish quality gate results
+#      inputs:
+#        pollingTimeoutSec: 300
     
     - task: Docker@2
       displayName: Build and push image to container registry
