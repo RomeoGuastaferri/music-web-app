@@ -44,14 +44,14 @@ stages:
       displayName: Package app in jar file
       inputs:
         mavenPomFile: pom.xml
-        codeCoverageTool: JaCoCo
-        codeCoverageSourceDirectories: src/main/java,src/test/java
-        codeCoverageClassFilesDirectories: target/classes,target/test-classes
-        sqAnalysisEnabled: true
-        sqMavenPluginVersionChoice: pom
-        checkstyleAnalysisEnabled: true
-        pmdAnalysisEnabled: true
-        findbugsAnalysisEnabled: true
+#        codeCoverageTool: JaCoCo
+#        codeCoverageSourceDirectories: src/main/java,src/test/java
+#        codeCoverageClassFilesDirectories: target/classes,target/test-classes
+#        sqAnalysisEnabled: true
+#        sqMavenPluginVersionChoice: pom
+#        checkstyleAnalysisEnabled: true
+#        pmdAnalysisEnabled: true
+#        findbugsAnalysisEnabled: true
 
 #    - task: SonarQubePublish@4
 #      displayName: Publish quality gate results
