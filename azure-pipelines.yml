@@ -16,9 +16,9 @@ variables:
   vmImageName: ubuntu-16.04
 
   # Docker image
-  containerRegistry: rguastaferri-service-connection
+  containerRegistry: docker-hub-connection
   imageRepository: music-albums
-  tag: 0.0.1-SNAPSHOT
+  tag: 1.0.0
   
 pool:
    vmImage: $(vmImageName)
@@ -39,20 +39,20 @@ stages:
 #        extraProperties: |
 #          sonar.projectName=music-web-app
 #          sonar.projectKey=music-web-app
-#
-#    - task: Maven@3
-#      displayName: Package app in jar file
-#      inputs:
-#        mavenPomFile: pom.xml
-#        codeCoverageTool: JaCoCo
-#        codeCoverageSourceDirectories: src/main/java,src/test/java
-#        codeCoverageClassFilesDirectories: target/classes,target/test-classes
-#        sqAnalysisEnabled: true
-#        sqMavenPluginVersionChoice: pom
-#        checkstyleAnalysisEnabled: true
-#        pmdAnalysisEnabled: true
-#        findbugsAnalysisEnabled: true
-#
+
+    - task: Maven@3
+      displayName: Package app in jar file
+      inputs:
+        mavenPomFile: pom.xml
+        codeCoverageTool: JaCoCo
+        codeCoverageSourceDirectories: src/main/java,src/test/java
+        codeCoverageClassFilesDirectories: target/classes,target/test-classes
+        sqAnalysisEnabled: true
+        sqMavenPluginVersionChoice: pom
+        checkstyleAnalysisEnabled: true
+        pmdAnalysisEnabled: true
+        findbugsAnalysisEnabled: true
+
 #    - task: SonarQubePublish@4
 #      displayName: Publish quality gate results
 #      inputs:
