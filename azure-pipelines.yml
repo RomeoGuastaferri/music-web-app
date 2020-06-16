@@ -12,12 +12,16 @@ variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: bf75e94e-9c81-482f-b708-863910cfab89
   
+  # app name
+  appName: music-albums-app
+  
   # Agent VM image name
   vmImageName: ubuntu-16.04
 
   # Docker image
   containerRegistry: docker-hub-connection
-  imageRepository: music-web-app
+  registryName: rguastaferri
+  imageRepository: music-albums
   tag: 1.0.0
   
 pool:
@@ -64,24 +68,19 @@ stages:
         command: buildAndPush
         repository: $(imageRepository)
         containerRegistry: $(containerRegistry)
-        tags: |
-          $(tag)
+        tags: $(tag)
 
 - stage: Deploy
-  displayName: Deploy stage
+  displayName: Deploy to dev slot
   dependsOn: Build
   condition: succeeded()
   jobs:
   - job: DeployDockerImage
     displayName: Deploy docker image to app service
-    variables:
-    # Release variable group defines $(WebAppName) & $(RegistryName)
-    - group: Release
-    
     steps:
     - task: AzureWebAppContainer@1
       inputs:
-        appName: $(WebAppName)
-        slotName: int
+        appName: $(appName)
+        slotName: dev
         azureSubscription: $(azureSubscription)
-        imageName: $(RegistryName)/$(imageRepository):$(tag)
+        imageName: $(registryName)/$(imageRepository):$(tag)
