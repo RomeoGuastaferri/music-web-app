@@ -9,11 +9,11 @@ trigger:
 
 variables:
 
-  # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: bf75e94e-9c81-482f-b708-863910cfab89
-  
   # app name
   appName: music-albums-app
+  
+  # Azure Resource Manager connection created during pipeline creation
+  azureSubscription: azure-resource-manager-connection
   
   # Agent VM image name
   vmImageName: ubuntu-16.04
