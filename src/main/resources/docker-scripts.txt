@@ -1,0 +1,27 @@
+docker run --rm 
+#
+# execute bash in running container
+#
+docker run -t -i --rm sonarqube bash
+docker run -t -i --rm 75e496fa0cf9 bash
+
+#
+# build functional sonarqube container
+#
+docker build -f DockerfileSonar -t rguastaferri.azurecr.io/sonarqube-fixed:1.0.6 .
+docker build -f Dockerfile -t guastaferri/music-albums:1.0.0 .
+
+#
+# push to azure
+#
+docker login rguastaferri.azurecr.io
+docker tag 71550663f1e3 rguastaferri.azurecr.io/sonarqube-fixed:1.0.6
+docker push rguastaferri.azurecr.io/sonarqube-fixed:1.0.6
+
+#
+# push to docker
+#
+docker login docker login registry-1.docker.io
+docker tag 87e8dd68dcc1 registry-1.docker.io/rguastaferri/music-albums:1.0.0
+docker push registry-1.docker.io/rguastaferri/music-albums:1.0.0
+
