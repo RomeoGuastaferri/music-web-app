@@ -1,0 +1,56 @@
+#
+# SSH into Azure Jenkins container
+#
+ssh -L 127.0.0.1:8080:localhost:8080 romeo@jenkins-3777090.eastus.cloudapp.azure.com
+??
+
+
+#
+# run local containerized jenkins
+#
+docker container run -p 8080:8080 \
+    -v jenkinsvol1:/var/jenkins_home \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    --name jenkins-local \
+    jenkins/jenkins:lts
+
+===
+
+docker container run --name docker-in-docker --detach \
+  --privileged --network jenkins --network-alias docker \
+  --env DOCKER_TLS_CERTDIR=/certs \
+  --volume jenkins-docker-certs:/certs/client \
+  --volume jenkins-data:/var/jenkins_home \
+  --volume "$HOME":/home docker:dind
+
+=====
+
+docker container run --name jenkins-local --detach \
+  --network jenkins --env DOCKER_HOST=tcp://docker:2376 \
+  --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 \
+  --volume jenkins-data:/var/jenkins_home \
+  --volume jenkins-docker-certs:/certs/client:ro \
+  --volume "$HOME":/home \
+  --publish 8080:8080 jenkinsci/blueocean:lts
+
+
+#
+# execute command in running container
+#
+docker container exec \
+    [CONTAINER ID or NAME] \
+    sh -c "cat /var/jenkins_home/secrets/initialAdminPassword"
+
+docker container exec -it [CONTAINER ID or NAME] bash
+
+# preferred syntax:
+docker container exec [OPTIONS] CONTAINER COMMAND [ARG...]
+# older syntax:
+docker           exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+#
+# extract project name & version from pom.xml
+#
+NAME=`mvn help:evaluate -Dexpression=project.name | grep "^[^\[]"`
+VERSION=`mvn help:evaluate -Dexpression=project.version | grep "^[^\[]"`
+
