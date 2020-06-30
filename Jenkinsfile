@@ -31,6 +31,7 @@ pipeline {
                     forcePull(false)
                     createFingerprints(false)
                     skipDecorate()
+                }
             }
         }
     }
