@@ -22,6 +22,17 @@ pipeline {
                 }
             }
         }
+        stage('Publish') {
+            steps {
+                dockerBuildAndPublish {
+                    repositoryName('rguastaferri/music-albums')
+                    tag('1.0.1')
+                    registryCredentials('DockerHubCredentials')
+                    forcePull(false)
+                    createFingerprints(false)
+                    skipDecorate()
+            }
+        }
     }
 }
 
