@@ -24,13 +24,9 @@ pipeline {
         }
         stage('Publish') {
             steps {
-                dockerBuildAndPublish {
-                    repositoryName('rguastaferri/music-albums')
-                    tag('1.0.1')
-                    registryCredentials('DockerHubCredentials')
-                    forcePull(false)
-                    createFingerprints(false)
-                    skipDecorate()
+                sh 'docker build -f Dockerfile -t guastaferri/music-albums:1.0.1 .'
+                withDockerRegistry([ credentialsId: "695a151f-0c58-4927-b87c-0e78014c525b", url: "" ]) {
+                    sh 'docker push guastaferri/music-albums:1.0.1'
                 }
             }
         }
