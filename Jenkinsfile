@@ -23,6 +23,9 @@ pipeline {
             }
         }
         stage('Publish') {
+            agent { 
+                label 'docker' 
+            }
             steps {
                 sh 'docker build -f Dockerfile -t guastaferri/music-albums:1.0.1 .'
                 withDockerRegistry([ credentialsId: "695a151f-0c58-4927-b87c-0e78014c525b", url: "" ]) {
