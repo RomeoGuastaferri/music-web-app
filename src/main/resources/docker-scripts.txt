@@ -25,3 +25,7 @@ docker login docker login registry-1.docker.io
 docker tag 87e8dd68dcc1 registry-1.docker.io/rguastaferri/music-albums:1.0.0
 docker push registry-1.docker.io/rguastaferri/music-albums:1.0.0
 
+#
+# dockerhub access token
+#
+695a151f-0c58-4927-b87c-0e78014c525b
