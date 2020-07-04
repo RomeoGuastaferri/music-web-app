@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Publish') {
             agent { 
-                label 'docker' 
+                label 'docker-agent' 
             }
             steps {
                 sh 'docker build -f Dockerfile -t guastaferri/music-albums:1.0.1 .'
