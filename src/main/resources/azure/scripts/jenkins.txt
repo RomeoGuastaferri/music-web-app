@@ -14,16 +14,19 @@ docker container run -p 8080:8080 \
     --name jenkins-local \
     jenkins/jenkins:lts
 
-===
+
+===== docker in docker
 
 docker container run --name docker-in-docker --detach \
   --privileged --network jenkins --network-alias docker \
   --env DOCKER_TLS_CERTDIR=/certs \
   --volume jenkins-docker-certs:/certs/client \
   --volume jenkins-data:/var/jenkins_home \
-  --volume "$HOME":/home docker:dind
+  --volume "$HOME":/home \
+  docker:dind
 
-=====
+
+===== jenkins in docker
 
 docker container run --name jenkins-local --detach \
   --network jenkins --env DOCKER_HOST=tcp://docker:2376 \
@@ -31,7 +34,8 @@ docker container run --name jenkins-local --detach \
   --volume jenkins-data:/var/jenkins_home \
   --volume jenkins-docker-certs:/certs/client:ro \
   --volume "$HOME":/home \
-  --publish 8080:8080 jenkinsci/blueocean:lts
+  --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+  --publish 8080:8080 jenkinsci/blueocean:latest
 
 
 #
