@@ -7,7 +7,7 @@ pipeline {
                 node {label "docker-agent" }
             }
             steps {
-                 sh "docker version"
+                 sh "java -version"
             }
         }
     }
