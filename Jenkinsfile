@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Publish') {
             agent { 
-                node {label "docker-agent" }
+                node {label "docker-master" }
             }
             steps {
                  sh "docker version"
