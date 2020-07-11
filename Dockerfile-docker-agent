@@ -1,0 +1,22 @@
+#
+# docker agent to be used by jenkin's docker-plugin
+# v 1.0.1
+#
+FROM jenkins/ssh-slave:latest
+
+#
+# install libltdl7 needed by docker
+#
+RUN apt-get -y update \
+ && apt-get -y upgrade \
+ && apt-get -y install libltdl7 \
+ && rm -rf /var/lib/apt/lists/*
+
+#
+# To fix docker connection issues:
+#   1) create docker group (same guid as in host)
+#   2) add jenkins to this docker group
+#
+RUN groupadd -g 999 docker \
+ && usermod -a -G docker jenkins
+

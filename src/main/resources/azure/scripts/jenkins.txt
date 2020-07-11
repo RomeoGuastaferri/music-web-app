@@ -37,6 +37,33 @@ docker container run --name jenkins-local --detach \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
   --publish 8080:8080 jenkinsci/blueocean:latest
 
+===== docker out of docker
+
+docker container run --detach --name jenkins-local \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume jenkins-data:/var/jenkins_home \
+  --publish 8080:8080 jenkinsci/blueocean:latest
+
+
+======= dockins
+
+docker container run --detach \
+  --name jenkins \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume /usr/bin/docker:/usr/bin/docker \
+  --volume jenkins-data:/var/jenkins_home \
+  --publish  8080:8080 \
+  --publish 50000:50000 \
+  rguastaferri/dockins:1.0.1
+
+===== Blue Ocean
+
+docker container run --detach \
+  --name jenkins \
+  --volume jenkins-data:/var/jenkins_home \
+  --publish  8080:8080 \
+  --publish 50000:50000 \
+  jenkinsci/blueocean:latest
 
 #
 # execute command in running container
