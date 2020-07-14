@@ -1,16 +1,25 @@
 #!/usr/bin/env groovy
 pipeline {
-    agent none
+    agent { 
+        node {label "docker-agent" }
+    }
     stages {
-        stage('Publish') {
-            agent { 
-                node {label "docker-agent" }
-            }
+        stage('Build') {
             steps {
-                 sh "set"
-                 sh "java -version"
+                sh 'mvn -B -DskipTests clean package'
+                sh 'ls -l'
+            }
+        }    
+        stage('Test') {
+            steps {
+                sh 'mvn -B -P dev test'
+            }
+        }
+        stage('Publish') {
+            steps {
+                sh 'docker build -f Dockerfile -t guastaferri/music-albums:1.1.0 .'
+                sh 'docker images'
             }
         }
     }
 }
-

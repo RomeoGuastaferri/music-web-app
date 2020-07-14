@@ -1,15 +1,15 @@
 #
 # docker agent to be used by jenkin's docker-plugin
-# v 1.0.1
+# v 1.0.2
 #
 FROM jenkins/ssh-slave:latest
 
 #
-# install libltdl7 needed by docker
+# install maven + libltdl7 needed by docker
 #
 RUN apt-get -y update \
  && apt-get -y upgrade \
- && apt-get -y install libltdl7 \
+ && apt-get -y install libltdl7 maven \
  && rm -rf /var/lib/apt/lists/*
 
 #
