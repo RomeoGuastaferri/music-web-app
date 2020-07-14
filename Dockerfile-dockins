@@ -1,0 +1,27 @@
+#
+# jenkins : automated continuous integration & deployment server
+# dockins : docker-enabled jenkins container
+# v 1.0.1
+#
+FROM jenkins/jenkins
+
+USER root
+
+#
+# install libltdl7 needed by docker
+#
+RUN apt -y update \
+ && apt -y upgrade \
+ && apt -y install libltdl7 \
+ && rm -rf /var/lib/apt/lists/*
+
+#
+# fix for docker connection issues:
+#   1) create docker group (same guid as in host)
+#   2) add jenkins user to this docker group
+#
+RUN groupadd -g 999 docker \
+ && usermod -a -G docker jenkins
+ 
+USER jenkins
+

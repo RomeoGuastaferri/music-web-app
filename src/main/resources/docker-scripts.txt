@@ -21,7 +21,7 @@ docker push rguastaferri.azurecr.io/sonarqube-fixed:1.0.6
 #
 # push to docker
 #
-docker login docker login registry-1.docker.io
+docker login registry-1.docker.io
 docker tag 87e8dd68dcc1 registry-1.docker.io/rguastaferri/music-albums:1.0.0
 docker push registry-1.docker.io/rguastaferri/music-albums:1.0.0
 

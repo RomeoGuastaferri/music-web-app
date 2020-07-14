@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>rguastaferri</groupId>
+	<groupId>ca.guastaferri</groupId>
 	<artifactId>music-albums</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<packaging>jar</packaging>
 
 	<description>Demo project for Spring PCF</description>
@@ -102,6 +102,12 @@
 		    <artifactId>commons-dbcp</artifactId>
 		    <version>1.4</version>
 		</dependency>
+
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		    <artifactId>jaxb-api</artifactId>
+		</dependency>
+
 		<dependency>
 		    <groupId>org.springframework.cloud</groupId>
 		    <artifactId>spring-cloud-spring-service-connector</artifactId>
@@ -202,21 +208,21 @@
 
 	<profiles>
 		<profile>
-			<!-- This profile will configure Spring to use an in-memory database for local development and testing. -->  
+			<!-- Use in-memory database for local development and testing. -->  
 			<id>dev</id>  
 			<properties>
-    			<spring.profiles.active>dev</spring.profiles.active>
+    				<spring.profiles.active>dev</spring.profiles.active>
 			</properties>
 		</profile>
 		
 		<profile>
-			<!-- This profile will configure the application to use our Azure MySQL server. -->  
+			<!-- Use Azure-hosted database server -->  
 			<id>prod</id>  
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>  
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>  
 			<properties>  
-    			<spring.profiles.active>prod</spring.profiles.active>
+    				<spring.profiles.active>prod</spring.profiles.active>
 			</properties>
 		</profile>
 	</profiles>
