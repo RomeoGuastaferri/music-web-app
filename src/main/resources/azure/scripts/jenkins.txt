@@ -54,7 +54,7 @@ docker container run --detach \
   --volume jenkins-data:/var/jenkins_home \
   --publish  8080:8080 \
   --publish 50000:50000 \
-  rguastaferri/dockins:1.0.1
+  rguastaferri/dockins:1.0.2
 
 ===== Blue Ocean
 
