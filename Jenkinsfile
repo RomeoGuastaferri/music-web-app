@@ -3,22 +3,31 @@ pipeline {
     agent { 
         node {label "docker-agent" }
     }
+    environment {
+        // maven project NAME & VERSION
+        pom = readMavenPom(file: 'pom.xml')
+        PROJECT_NAME    = pom.getArtifactId()
+        PROJECT_VERSION = pom.getVersion()
+
+        // Docker repository, image & tag
+        REPO  = "rguastaferri"
+        IMAGE = "$PROJECT_NAME"
+        TAG   = "$PROJECT_VERSION"
+    }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
-                sh 'ls -l'
+                sh 'mvn -B clean package' 
             }
         }    
-        stage('Test') {
-            steps {
-                sh 'mvn -B -P dev test'
-            }
-        }
         stage('Publish') {
             steps {
-                sh 'docker build -f Dockerfile -t guastaferri/music-albums:1.1.0 .'
-                sh 'docker images'
+                script{
+                    image = docker.build("$REPO/$IMAGE:$TAG")
+                    docker.withRegistry('', 'DockerHubCredentials') {
+                        image.push()
+                    }
+                }
             }
         }
     }
