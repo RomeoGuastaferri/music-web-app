@@ -22,12 +22,26 @@ pipeline {
         }    
         stage('Publish') {
             steps {
+                // build docker image & push to dockerhub
                 script{
                     image = docker.build("$REPO/$IMAGE:$TAG")
                     docker.withRegistry('', 'DockerHubCredentials') {
                         image.push()
                     }
                 }
+
+                // deploy docker image to azure app service
+                azureWebAppPublish ([
+                    azureCredentialsId: "AzureAppServiceCredentials",
+                    resourceGroup: "music-albums-rg",
+                    appName: "music-albums-app",
+                    slotName: "dev",
+                    publishType: "docker",
+                    dockerImageName: "$IMAGE",
+                    dockerImageTag: "$TAG",
+                    dockerRegistryEndpoint: [credentialsId: "DockerHubCredentials", url: ""],
+                    skipDockerBuild: "true"
+                ])
             }
         }
     }
