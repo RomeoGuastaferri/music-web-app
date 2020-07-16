@@ -37,7 +37,7 @@ pipeline {
                     appName: "music-albums-app",
                     slotName: "dev",
                     publishType: "docker",
-                    dockerImageName: "$IMAGE",
+                    dockerImageName: "$REPO/$IMAGE",
                     dockerImageTag: "$TAG",
                     dockerRegistryEndpoint: [credentialsId: "DockerHubCredentials", url: ""],
                     skipDockerBuild: "true"
