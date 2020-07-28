@@ -23,7 +23,7 @@ public class ErrorController {
     @RequestMapping(value = "/fill-heap")
     public void fillHeap() {
         logger.info("Filling heap with junk, to initiate a crash");
-	for (int i = 0; i < Integer.maxValue(); i++) {
+	for (int i = 0; i < Integer.MAX_VALUE; i++) {
             junk.add(new int[9999999]);
         }
     }
