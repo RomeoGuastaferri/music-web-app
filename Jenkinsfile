@@ -35,7 +35,6 @@ pipeline {
         stage('Sonar Scan') {
             steps {
                 withSonarQubeEnv('sonarqube-in-azure') {
-                    sh 'mvn -B sonar:sonar'
                     sh "${SONAR_DIR}/bin/sonar-scanner"
                 }
             }
@@ -47,7 +46,7 @@ pipeline {
                 }
             }
         }
-        stage('Publish') {
+        stage('Publish to Dev') {
             steps {
                 // build docker image & push to dockerhub
                 script{
