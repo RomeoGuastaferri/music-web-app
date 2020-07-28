@@ -10,7 +10,7 @@ pipeline {
     environment {
         // maven project NAME & VERSION
         pom = readMavenPom(file: 'pom.xml')
-        PROJECT_NAME    = pom.getArtifactId()
+        PROJECT_GROUP   = pom.getGroupId()
         PROJECT_VERSION = pom.getVersion()
 
         // Docker repository, image & tag
@@ -18,18 +18,33 @@ pipeline {
         IMAGE = "$PROJECT_NAME"
         TAG   = "$PROJECT_VERSION"
 
-	// Sonarqube server
-	SONAR_SERVER = "http://sonar2-3777090.eastus.azurecontainer.io:9000/"
+        // Sonarqube parameters
+        SONAR_DIR = tool 'sonar-scanner';
     }
     stages {
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                sh 'mvn -B -DskipTests=true clean package' 
+                sh 'mvn -B clean package' 
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Sonar Scan') {
+            steps {
+                withSonarQubeEnv('sonarqube-in-azure') {
+                    sh 'mvn -B sonar:sonar'
+                    sh "${SONAR_DIR}/bin/sonar-scanner"
+                }
             }
         }
         stage('Quality Gate') {
             steps {
-                sh 'mvn -B -Dsonar.host.url="$SONAR_SERVER" verify sonar:sonar' 
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
         stage('Publish') {
