@@ -24,7 +24,7 @@ pipeline {
     stages {
         stage('Build & Test') {
             steps {
-                sh 'mvn -B clean package' 
+                sh 'mvn clean package' 
             }
             post {
                 always {
@@ -46,7 +46,7 @@ pipeline {
                 }
             }
         }
-        stage('Publish to Dev') {
+        stage('Publish to INT') {
             steps {
                 // build docker image & push to dockerhub
                 script{
@@ -61,13 +61,18 @@ pipeline {
                     azureCredentialsId: "AzureAppServiceCredentials",
                     resourceGroup: "music-albums-rg",
                     appName: "music-albums-app",
-                    slotName: "dev",
+                    slotName: "int",
                     publishType: "docker",
                     dockerImageName: "$REPO/$IMAGE",
                     dockerImageTag: "$TAG",
                     dockerRegistryEndpoint: [credentialsId: "DockerHubCredentials", url: ""],
                     skipDockerBuild: "true"
                 ])
+            }
+        }
+        stage('Integration Tests') {
+            steps {
+                sh 'mvn verify -P integration-tests'
             }
         }
     }
