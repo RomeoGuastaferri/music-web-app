@@ -32,44 +32,44 @@ pipeline {
                 }
             }
         }
-        stage('Sonar Scan') {
-            steps {
-                withSonarQubeEnv('sonarqube-in-azure') {
-                    sh "${SONAR_DIR}/bin/sonar-scanner"
-                }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-        stage('Publish to INT') {
-            steps {
-                // build docker image & push to dockerhub
-                script{
-                    image = docker.build("$REPO/$IMAGE:$TAG")
-                    docker.withRegistry('', 'DockerHubCredentials') {
-                        image.push()
-                    }
-                }
-
-                // deploy docker image to azure app service
-                azureWebAppPublish ([
-                    azureCredentialsId: "AzureAppServiceCredentials",
-                    resourceGroup: "music-albums-rg",
-                    appName: "music-albums-app",
-                    slotName: "int",
-                    publishType: "docker",
-                    dockerImageName: "$REPO/$IMAGE",
-                    dockerImageTag: "$TAG",
-                    dockerRegistryEndpoint: [credentialsId: "DockerHubCredentials", url: ""],
-                    skipDockerBuild: "true"
-                ])
-            }
-        }
+//        stage('Sonar Scan') {
+//            steps {
+//                withSonarQubeEnv('sonarqube-in-azure') {
+//                    sh "${SONAR_DIR}/bin/sonar-scanner"
+//                }
+//            }
+//        }
+//        stage('Quality Gate') {
+//            steps {
+//                timeout(time: 10, unit: 'MINUTES') {
+//                    waitForQualityGate abortPipeline: true
+//                }
+//            }
+//        }
+//        stage('Publish to INT') {
+//            steps {
+//                // build docker image & push to dockerhub
+//                script{
+//                    image = docker.build("$REPO/$IMAGE:$TAG")
+//                    docker.withRegistry('', 'DockerHubCredentials') {
+//                        image.push()
+//                    }
+//                }
+//
+//                // deploy docker image to azure app service
+//                azureWebAppPublish ([
+//                    azureCredentialsId: "AzureAppServiceCredentials",
+//                    resourceGroup: "music-albums-rg",
+//                    appName: "music-albums-app",
+//                    slotName: "int",
+//                    publishType: "docker",
+//                    dockerImageName: "$REPO/$IMAGE",
+//                    dockerImageTag: "$TAG",
+//                    dockerRegistryEndpoint: [credentialsId: "DockerHubCredentials", url: ""],
+//                    skipDockerBuild: "true"
+//                ])
+//            }
+//        }
         stage('Integration Tests') {
             steps {
                 sh 'mvn verify -P integration-tests'
