@@ -1,8 +1,8 @@
 package com.musicalbum;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -12,15 +12,22 @@ public class MusicalbumIT {
 	private Properties props = null;
 	private String home = null;
 	
+	//
+	// tests
+	//
+	
 	@Test 
 	public void getHomePage_Succeed() throws FileNotFoundException, IOException {
 		// To be implemented...
 		System.out.println("*** Integration tests being run... ***");
+		System.out.println("*** received parameters: browser=" + System.getenv("browser") + ", os=" + System.getenv("os"));
+		System.out.println("*** about to ping " + getHome());
+
 		System.out.println("*** about to ping " + getHome());
 	}
 	
 	//
-	// implementation
+	// getters
 	//
 	
 	private String getHome() throws FileNotFoundException, IOException {
@@ -32,8 +39,11 @@ public class MusicalbumIT {
 	
 	private Properties getProperties() throws FileNotFoundException, IOException {
 		if (props == null) {
-			props = new Properties();
-			props.load(new FileInputStream("target/test-classes/com/musicalbum/application.properties"));
+			// read in properties from properties file
+			try(InputStream stream = getClass().getResourceAsStream("test.properties")) {
+				props = new Properties();
+				props.load(stream);
+			}
 		}
 		return props;
 	}
