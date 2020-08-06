@@ -1,0 +1,152 @@
+#
+# set aks & resource group names
+#
+clusterName="selenium-grid"
+rgName="music-albums-rg"
+
+#
+# create managed Kubernetes cluster
+#
+az aks create \
+  --resource-group $rgName \
+  --name $clusterName \
+  --dns-name-prefix music-albums-3777090 \
+  --node-vm-size Standard_B2s \
+  --node-count 3 \
+  --enable-addons monitoring,http_application_routing \
+  --generate-ssh-keys
+
+#
+# activate credentials for newly created AKS cluster
+#
+az aks get-credentials \
+  --resource-group $rgName \
+  --name $clusterName
+
+#
+# verify connection to cluster
+#
+kubectl get nodes
+(kubectl get pods?--> need to deploy in nodes first)
+
+#
+# deploy selenium hub
+# 
+(upload file)
+kubectl apply -f /home/romeo/selenium-hub-deployment.yaml
+
+#
+# verify hub deployment
+#
+kubectl get deploy selenium-hub
+kubectl get pods
+
+#
+# deploy hub service
+#
+(upload file)
+kubectl apply -f /home/romeo/selenium-hub-service.yaml
+
+#
+# verify hub service
+#
+kubectl get service selenium-hub
+
+#
+# start kubernetes in browser
+#
+az aks browse -g $rgName -n $clusterName
+
+#
+# TO GET ADMIN TOKEN
+# first, set admin credentials
+
+az aks get-credentials -a \
+  --resource-group $rgName \
+  --name $clusterName
+
+# then download /home/romeo/.kube/config
+# ...to use as kubernetes file for logon
+# (remember to enable pop-ups from portal in firefox)
+
+#
+# deploy firefox node
+#
+(upload file)
+kubectl apply -f /home/romeo/selenium-node-firefox.yaml
+
+#
+# validate setup, then RUN TEST !
+#
+
+
+#
+# clean up
+#
+az aks delete -g music-albums-rg -n selenium-grid
+kubectl config delete-context $clusterName
+
+====
+
+# query Azure DNS zone list (??)
+az network dns zone list --output table
+
+#
+# deploy ingress
+#
+kubectl apply -f /home/romeo/ingress.yaml
+
+# verify ingress deployment
+kubectl get ingress selenium-ingress
+
+#
+# Look into this ???
+#
+az network dns record-set list \
+   -g mc_music-albums-rg_selenium-grid_eastus \
+   -z 46b399436d2b440caf49.eastus.aksapp.io \
+   --output table
+
+#
+# start kubernetes in browser
+#
+az aks browse -g $rgName -n $clusterName
+
+# TO GET ADMIN TOKEN
+kubectl config view
+
+=======================================================
+
+#
+# ?? ID of the service principal configured for the AKS instance
+# (AFTER creation of AKS)
+#
+clientId=$(az aks show \
+  --name $clusterName \
+  --resource-group $rgName \
+  --query "servicePrincipalProfile.clientId" \
+  --output tsv)
+
+# ?
+kubectl describe deployment $clusterName --namespace default
+
+#
+# run kubernetes hub
+#
+
+# run selenium hub image
+kubectl run selenium-grid --image selenium/hub:3.3.0 --port 4444
+
+# ?... (look into this)
+kubectl expose deployment $clusterName --type=LoadBalancer --name=selenium-grid
+
+# what does this do ?
+#kubectl get service selenium-hub --watch
+#kubectl get service selenium-service --watch
+# selenium-service = ClusterIP
+# selenium-hub = Selenium Grid (need to load in Node ??)
+...
+
+
+
+

@@ -1,0 +1,19 @@
+#
+# selenium-hub-service.yaml
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-hub
+  labels:
+    app: selenium-hub
+spec:
+  type: NodePort
+  ports:
+  - port: 4444
+    targetPort: 4444
+    name: port0
+  selector:
+    app: selenium-hub
+  sessionAffinity: None
+

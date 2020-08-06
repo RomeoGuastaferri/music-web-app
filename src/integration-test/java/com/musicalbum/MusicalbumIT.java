@@ -22,8 +22,6 @@ public class MusicalbumIT {
 		System.out.println("*** Integration tests being run... ***");
 		System.out.println("*** received parameters: browser=" + System.getenv("browser") + ", os=" + System.getenv("os"));
 		System.out.println("*** about to ping " + getHome());
-
-		System.out.println("*** about to ping " + getHome());
 	}
 	
 	//
