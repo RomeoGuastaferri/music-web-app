@@ -4,16 +4,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: selenium-hub
-  labels:
-    app: selenium-hub
+  name: selenium-service
 spec:
-  type: NodePort
-  ports:
-  - port: 4444
-    targetPort: 4444
-    name: port0
+  type: LoadBalancer
   selector:
-    app: selenium-hub
-  sessionAffinity: None
+    k8s-app: selenium-hub
+  ports:
+  - port: 30001
+    targetPort: 4444
 
+# http://52.152.243.68:30001/grid/console

@@ -2,15 +2,27 @@ package com.musicalbum;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.net.MalformedURLException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
 
-public class MusicalbumIT {
+
+public class MusicalbumIT extends SeleniumITSuite {
 	
-	private Properties props = null;
-	private String home = null;
+	private WebDriver web = null;
+	
+	@Before
+	public void setUp() throws MalformedURLException, FileNotFoundException, IOException {
+		web = createWebDriver();
+	}
+	
+	@After
+	public void tearDown() {
+		web.close();
+	}
 	
 	//
 	// tests
@@ -20,29 +32,7 @@ public class MusicalbumIT {
 	public void getHomePage_Succeed() throws FileNotFoundException, IOException {
 		// To be implemented...
 		System.out.println("*** Integration tests being run... ***");
-		System.out.println("*** received parameters: browser=" + System.getenv("browser") + ", os=" + System.getenv("os"));
-		System.out.println("*** about to ping " + getHome());
-	}
-	
-	//
-	// getters
-	//
-	
-	private String getHome() throws FileNotFoundException, IOException {
-		if (home == null) {
-			home = getProperties().getProperty("app.url");
-		}
-		return home;
-	}
-	
-	private Properties getProperties() throws FileNotFoundException, IOException {
-		if (props == null) {
-			// read in properties from properties file
-			try(InputStream stream = getClass().getResourceAsStream("test.properties")) {
-				props = new Properties();
-				props.load(stream);
-			}
-		}
-		return props;
+		web.navigate().to(getAppURL());
+		System.out.println("*** Just successfully navigated to page " + web.getTitle());
 	}
 }

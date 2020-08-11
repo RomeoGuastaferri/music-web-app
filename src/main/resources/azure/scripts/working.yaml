@@ -1,0 +1,56 @@
+romeo@Azure:~$ kubectl describe services/selenium-hub
+Name:                     selenium-hub
+Namespace:                default
+Labels:                   k8s-app=selenium-hub
+Annotations:              <none>
+Selector:                 k8s-app=selenium-hub
+Type:                     LoadBalancer
+IP:                       10.0.133.58
+LoadBalancer Ingress:     104.45.191.146
+Port:                     tcp-30001-4444-95gl9  30001/TCP
+TargetPort:               4444/TCP
+NodePort:                 tcp-30001-4444-95gl9  30771/TCP
+Endpoints:                10.244.1.5:4444
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:
+  Type    Reason                Age    From                Message
+  ----    ------                ----   ----                -------
+  Normal  EnsuringLoadBalancer  2m58s  service-controller  Ensuring load balancer
+  Normal  EnsuredLoadBalancer   2m54s  service-controller  Ensured load balancer
+romeo@Azure:~$ kubectl get deployments
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+angular-app-azure   3/3     3            3           90m
+selenium-hub        1/1     1            1           6m15s
+romeo@Azure:~$ kubectl describe deployments/selenium-hub
+Name:                   selenium-hub
+Namespace:              default
+CreationTimestamp:      Mon, 10 Aug 2020 23:10:00 +0000
+Labels:                 k8s-app=selenium-hub
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               k8s-app=selenium-hub
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  k8s-app=selenium-hub
+  Containers:
+   selenium-hub:
+    Image:        selenium/hub:3.141
+    Port:         <none>
+    Host Port:    <none>
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   selenium-hub-7cb88c596b (1/1 replicas created)
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  6m30s  deployment-controller  Scaled up replica set selenium-hub-7cb88c596b to 1

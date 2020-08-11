@@ -1,8 +1,15 @@
 #
-# set aks & resource group names
+# set cluster & resource group names
 #
-clusterName="selenium-grid"
-rgName="music-albums-rg"
+clusterName="selenium-cluster" && \
+rgName="dev-support-3777090-rg"
+
+#
+# create resource group
+#
+az group create \
+  --name $rgName \
+  --location eastus
 
 #
 # create managed Kubernetes cluster
@@ -10,11 +17,21 @@ rgName="music-albums-rg"
 az aks create \
   --resource-group $rgName \
   --name $clusterName \
-  --dns-name-prefix music-albums-3777090 \
+  --dns-name-prefix selenium-3777090 \
   --node-vm-size Standard_B2s \
-  --node-count 3 \
-  --enable-addons monitoring,http_application_routing \
-  --generate-ssh-keys
+  --node-count 4 \
+  --generate-ssh-keys \
+  --enable-addons monitoring,http_application_routing
+
+#
+# retrieve DNS zone name
+#
+az aks show \
+  --resource-group $rgName \
+  --name $clusterName \
+  --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o table
+
+3fe3bb6ac99f43e7ad2c.eastus.aksapp.io
 
 #
 # activate credentials for newly created AKS cluster
@@ -31,31 +48,59 @@ kubectl get nodes
 
 #
 # deploy selenium hub
-# 
-(upload file)
+# ???
 kubectl apply -f /home/romeo/selenium-hub-deployment.yaml
+#
+# create pod for selenium hub NOPE!!
+#
+#kubectl create -f /home/romeo/selenium-hub-pod.yaml
 
 #
 # verify hub deployment
 #
-kubectl get deploy selenium-hub
+#kubectl get deploy selenium-hub
 kubectl get pods
 
 #
-# deploy hub service
-#
-(upload file)
+# deploy hub service so the nodes can locate the hub
+# ???
 kubectl apply -f /home/romeo/selenium-hub-service.yaml
+kubectl expose deployment/selenium-hub \
+  --name selenium-service \
+  --target-port 4444 \
+  --type NodePort
+
+# then
+kubectl get svc selenium-service
+kubectl describe node selenium-hub
+
+kubectl get service selenium-service
 
 #
 # verify hub service
 #
 kubectl get service selenium-hub
 
+
+# OR ???
+
+kubectl run selenium-cluster --image selenium/hub:3.3.0 --port 4444
+kubectl expose deployment selenium-hub \
+  --name=selenium-hub-external \
+  --labels="app=selenium-hub,external=true" \
+  --type=LoadBalancer
+
+# ?? external ??
+#kubectl get service selenium-hub --watch
+kubectl get service selenium-hub-external --watch
+
+
 #
 # start kubernetes in browser
 #
 az aks browse -g $rgName -n $clusterName
+
+http://selenium-3777090-4ec2f16e.hcp.eastus.azmk8s.io:30001/grid/console
 
 #
 # TO GET ADMIN TOKEN
@@ -72,8 +117,7 @@ az aks get-credentials -a \
 #
 # deploy firefox node
 #
-(upload file)
-kubectl apply -f /home/romeo/selenium-node-firefox.yaml
+kubectl create -f /home/romeo/selenium-replic-firefox.yaml
 
 #
 # validate setup, then RUN TEST !
@@ -83,10 +127,11 @@ kubectl apply -f /home/romeo/selenium-node-firefox.yaml
 #
 # clean up
 #
-az aks delete -g music-albums-rg -n selenium-grid
-kubectl config delete-context $clusterName
+az aks delete -g dev-support-3777090-rg -n selenium-cluster
+az group delete --name dev-support-3777090-rg
+kubectl config delete-context selenium-cluster
 
-====
+=======================================================
 
 # query Azure DNS zone list (??)
 az network dns zone list --output table
@@ -103,7 +148,7 @@ kubectl get ingress selenium-ingress
 # Look into this ???
 #
 az network dns record-set list \
-   -g mc_music-albums-rg_selenium-grid_eastus \
+   -g mc_music-albums-rg_selenium-cluster_eastus \
    -z 46b399436d2b440caf49.eastus.aksapp.io \
    --output table
 
@@ -135,10 +180,10 @@ kubectl describe deployment $clusterName --namespace default
 #
 
 # run selenium hub image
-kubectl run selenium-grid --image selenium/hub:3.3.0 --port 4444
+kubectl run selenium-cluster --image selenium/hub:3.3.0 --port 4444
 
 # ?... (look into this)
-kubectl expose deployment $clusterName --type=LoadBalancer --name=selenium-grid
+kubectl expose deployment $clusterName --type=LoadBalancer --name=selenium-grid??
 
 # what does this do ?
 #kubectl get service selenium-hub --watch

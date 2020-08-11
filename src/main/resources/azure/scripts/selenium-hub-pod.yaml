@@ -1,0 +1,30 @@
+#
+# selenium-hub-pod.yaml
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: selenium-hub
+  labels:
+    app: selenium-hub
+spec:
+  containers:
+  - name: selenium-hub
+    image: selenium/hub:3.141
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+    ports:
+    - containerPort: 4444
+    livenessProbe:
+      httpGet:
+        path: /wd/hub/status
+        port: 4444
+      initialDelaySeconds: 30
+      timeoutSeconds: 5
+
+
