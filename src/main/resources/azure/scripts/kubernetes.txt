@@ -19,19 +19,9 @@ az aks create \
   --name $clusterName \
   --dns-name-prefix selenium-3777090 \
   --node-vm-size Standard_B2s \
-  --node-count 4 \
-  --generate-ssh-keys \
-  --enable-addons monitoring,http_application_routing
-
-#
-# retrieve DNS zone name
-#
-az aks show \
-  --resource-group $rgName \
-  --name $clusterName \
-  --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o table
-
-3fe3bb6ac99f43e7ad2c.eastus.aksapp.io
+  --node-count 5 \
+  --generate-ssh-keys
+#  --enable-addons monitoring,http_application_routing
 
 #
 # activate credentials for newly created AKS cluster
@@ -44,16 +34,11 @@ az aks get-credentials \
 # verify connection to cluster
 #
 kubectl get nodes
-(kubectl get pods?--> need to deploy in nodes first)
 
 #
 # deploy selenium hub
-# ???
+# 
 kubectl apply -f /home/romeo/selenium-hub-deployment.yaml
-#
-# create pod for selenium hub NOPE!!
-#
-#kubectl create -f /home/romeo/selenium-hub-pod.yaml
 
 #
 # verify hub deployment
@@ -65,10 +50,6 @@ kubectl get pods
 # deploy hub service so the nodes can locate the hub
 # ???
 kubectl apply -f /home/romeo/selenium-hub-service.yaml
-kubectl expose deployment/selenium-hub \
-  --name selenium-service \
-  --target-port 4444 \
-  --type NodePort
 
 # then
 kubectl get svc selenium-service
@@ -80,20 +61,6 @@ kubectl get service selenium-service
 # verify hub service
 #
 kubectl get service selenium-hub
-
-
-# OR ???
-
-kubectl run selenium-cluster --image selenium/hub:3.3.0 --port 4444
-kubectl expose deployment selenium-hub \
-  --name=selenium-hub-external \
-  --labels="app=selenium-hub,external=true" \
-  --type=LoadBalancer
-
-# ?? external ??
-#kubectl get service selenium-hub --watch
-kubectl get service selenium-hub-external --watch
-
 
 #
 # start kubernetes in browser
@@ -118,6 +85,7 @@ az aks get-credentials -a \
 # deploy firefox node
 #
 kubectl create -f /home/romeo/selenium-replic-firefox.yaml
+kubectl create -f /home/romeo/selenium-replic-chrome.yaml
 
 #
 # validate setup, then RUN TEST !

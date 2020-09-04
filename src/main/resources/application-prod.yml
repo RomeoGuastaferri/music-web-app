@@ -4,10 +4,13 @@
 #
 spring:
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     hibernate:
       ddl-auto: update
+#    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+#    database-platform: org.hibernate.dialect.MySQL5Dialect
+#    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+# spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation: true
 
 #
 # Keep the connection alive if idle for a long time (needed in production)
@@ -16,3 +19,30 @@ spring:
   datasource:
     testWhileIdle: true
     validationQuery: SELECT 1
+
+---
+#
+# mySQL config
+#
+spring:
+  profiles: mysql
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
+---
+#
+# Postgres config
+#
+spring:
+  profiles: postgres
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.ProgressDialect
+    database-platform: org.hibernate.dialect.ProgressDialect
+

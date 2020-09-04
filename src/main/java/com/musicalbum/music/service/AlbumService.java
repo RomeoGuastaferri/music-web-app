@@ -11,26 +11,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlbumService {
 
+    @Autowired
     private AlbumRepository repository;
-    
+
+    /*
     @Autowired
     public AlbumService(AlbumRepository repository) {
         this.repository = repository;
     }
-    
+    */    
 
-    public Iterable<Album> getAllalbums() {
+    public Iterable<Album> getAll() {
         return repository.findAll();
     }
 
 
-    public Album addAlbum(Album album) {
+    public Album add(Album album) {
 
         return repository.save(album);
     }
 
 
-    public Album updateAlbum(Album album) {
+    public Album update(Album album) {
         return repository.save(album);
     }
 

@@ -1,0 +1,11 @@
+#
+# login
+#
+cf login -a api.run.pivotal.io
+
+#
+# push app
+#
+cf push music-albums -p ./target/music-albums-1.1.1.jar
+
+

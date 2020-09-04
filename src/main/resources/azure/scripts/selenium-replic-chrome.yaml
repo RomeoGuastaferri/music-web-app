@@ -1,20 +1,20 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: selenium-rep-firefox
+  name: selenium-rep-chrome
 spec:
   replicas: 1
   selector:
-    app: selenium-firefox
+    app: selenium-chrome
   template:
     metadata:
-      name: selenium-firefox
+      name: selenium-chrome
       labels:
-        app: selenium-firefox
+        app: selenium-chrome
     spec:
       containers:
-      - name: node-firefox
-        image: selenium/node-firefox
+      - name: node-chrome
+        image: selenium/node-chrome
         env:
         - name: HUB_HOST
           value: "selenium-service"

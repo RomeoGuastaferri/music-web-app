@@ -26,19 +26,19 @@ public class AlbumController {
     
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Album> getAlbums() {
-        return albumService.getAllalbums();
+        return albumService.getAll();
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public Album add(@RequestBody @Valid Album album) {
         logger.info("Adding album " + album.getId());
-        return albumService.addAlbum(album);
+        return albumService.add(album);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public Album update(@RequestBody @Valid Album album) {
         logger.info("Updating album " + album.getId());
-        return albumService.updateAlbum(album);
+        return albumService.update(album);
     }
 
 /*    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
